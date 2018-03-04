@@ -16,30 +16,17 @@ class Key {
     public:
         Key(int r, int c, const char *val);
 
-        static Key* temporaryDownKey(Layer *l, int r, int c) {
+        static Key* temporaryKey(Layer *l, int r, int c) {
             Key * key = new Key(r, c, NULL);
             key->setLayer(l);
-            key->setType(TEMP_DOWN);
+            key->setType(TEMPORARY);
             return key;
         }
 
-        static Key* temporaryUpKey(Layer *l, int r, int c) {
+        static Key* switchKey(Layer *l, int r, int c) {
             Key * key = new Key(r, c, NULL);
             key->setLayer(l);
-            key->setType(TEMP_UP);
-            return key;
-        }
-
-        static Key* downKey(Layer *l, int r, int c) {
-            Key * key = new Key(r, c, NULL);
-            key->setLayer(l);
-            key->setType(DOWN);
-            return key;
-        }
-        static Key* upKey(Layer *l, int r, int c) {
-            Key * key = new Key(r, c, NULL);
-            key->setLayer(l);
-            key->setType(UP);
+            key->setType(SWITCH);
             return key;
         }
 

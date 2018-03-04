@@ -4,10 +4,11 @@
  * The activation type for a key.
  */
 enum KeyType {
+    // Output something to the keyboard.
     VALUE,
-    TEMP_UP,
-    TEMP_DOWN,
-    DOWN,
-    UP,
+    // Change the layer temporarily.
+    TEMPORARY,
+    // Change layers.
+    SWITCH,
 };
 #endif

@@ -64,25 +64,15 @@ static char * test_named_constructors_for_different_key_types() {
         {"a"}
     };
     Layer *layer = new Layer((char **) &values, 1, 1);
-    Key *key1 = Key::temporaryDownKey(layer, 0, 0);
+    Key *key1 = Key::temporaryKey(layer, 0, 0);
     mu_assert(
-        (char *) "Should have type TEMP_DOWN",
-        key1->getType() == TEMP_DOWN
+        (char *) "Should have type TEMPORARY",
+        key1->getType() == TEMPORARY
     );
-    Key *key2 = Key::temporaryUpKey(layer, 0, 0);
+    Key *key3 = Key::switchKey(layer, 0, 0);
     mu_assert(
-        (char *) "Should have type TEMP_UP",
-        key2->getType() == TEMP_UP
-    );
-    Key *key3 = Key::downKey(layer, 0, 0);
-    mu_assert(
-        (char *) "Should have type DOWN",
-        key3->getType() == DOWN
-    );
-    Key *key4 = Key::upKey(layer, 0, 0);
-    mu_assert(
-        (char *) "Should have type UP",
-        key4->getType() == UP
+        (char *) "Should have type SWITCH",
+        key3->getType() == SWITCH
     );
     Key *key5 = new Key(0, 0, "M");
     mu_assert(
@@ -136,22 +126,22 @@ static char * test_set_layer_up_and_down_keys() {
     };
     Layer layer2 = Layer((char **) &l2Values, 2, 2);
 
-    layer1.setLayerTemporaryUp(&layer2, 1, 0);
+    layer1.setLayerTemporarySwitch(&layer2, 1, 0);
     mu_assert(
         (char *) "Layer1 key at 1, 0 should hold layer 2.",
         layer1.getKey(1, 0)->getLayer() == &layer2
     );
     mu_assert(
-        (char *) "Key is of type TEMP_UP",
-        layer1.getKey(1, 0)->getType() == TEMP_UP
+        (char *) "Key is of type TEMPORARY",
+        layer1.getKey(1, 0)->getType() == TEMPORARY
     );
     mu_assert(
         (char *) "Layer2 key at 1, 0 should hold layer 1.",
         layer2.getKey(1, 0)->getLayer() == &layer1
     );
     mu_assert(
-        (char *) "Key should be of type TEMP_DOWN",
-        layer2.getKey(1, 0)->getType() == TEMP_DOWN
+        (char *) "Key should be of type TEMPORARY",
+        layer2.getKey(1, 0)->getType() == TEMPORARY
     );
     return 0;
 }
@@ -165,14 +155,18 @@ static char *test_temporary_layers_added_symmetrically_automatically() {
         {"0", NULL}
     };
     Layer *secondLayer = new Layer((char **) &secondValues, 1, 2);
-    firstLayer->setLayerTemporaryDown(secondLayer, 1, 0);
+    firstLayer->setLayerTemporarySwitch(secondLayer, 1, 0);
     mu_assert(
         (char *) "The first key should have been assigned as normal.",
-        firstLayer->getKey(0, 1)->getType() == TEMP_DOWN
+        firstLayer->getKey(0, 1)->getType() == TEMPORARY
     );
     mu_assert(
         (char *) "The second layer key should be assigned automatically.",
-        secondLayer->getKey(0, 1)->getType() == TEMP_UP
+        secondLayer->getKey(0, 1)->getType() == TEMPORARY
+    );
+    mu_assert(
+        (char *) "The second layer key should be pointing at the first.",
+        secondLayer->getKey(0, 1)->getLayer() == firstLayer
     );
     return 0;
 }
@@ -193,8 +187,8 @@ static char *test_can_chain_layer_setting() {
         { ".", NULL }
     };
     Layer *thirdLayer = new Layer((char **) &thirdValues, 2, 2);
-    mainLayer->setLayerTemporaryDown(secondLayer, 0, 1)
-             ->setLayerTemporaryUp(thirdLayer, 1, 1);
+    mainLayer->setLayerTemporarySwitch(secondLayer, 0, 1)
+             ->setLayerTemporarySwitch(thirdLayer, 1, 1);
     return 0;
 }
 
@@ -228,7 +222,7 @@ static char * test_create_board() {
         {"c", NULL}
     };
     Layer *mainLayer = (new Layer((char **) &mainValues, 2, 2))
-        ->setLayerTemporaryUp(tempUpLayer, 1, 1);
+        ->setLayerTemporarySwitch(tempUpLayer, 1, 1);
 
     // Create a board to manage layers and execute keystrokes.
     Board board = Board(mainLayer);

@@ -15,10 +15,8 @@ class Layer {
         int getRowSize();
         int getColumnSize();
         /* The below setters return this, so they may be chained.*/
-        Layer *setLayerUp(Layer *, int r, int c);
-        Layer *setLayerDown(Layer *, int r, int c);
-        Layer *setLayerTemporaryUp(Layer *, int r, int c);
-        Layer *setLayerTemporaryDown(Layer *, int r, int c);
+        Layer *setLayerSwitch(Layer *, int r, int c);
+        Layer *setLayerTemporarySwitch(Layer *, int r, int c);
 };
 
 #endif

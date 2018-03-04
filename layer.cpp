@@ -31,40 +31,20 @@ int Layer::getColumnSize() {
     return colSize;
 }
 
-Layer * Layer::setLayerUp(Layer *layer, int r, int c) {
-    Key *key = Key::upKey(layer, r, c);
+Layer * Layer::setLayerSwitch(Layer *layer, int r, int c) {
+    Key *key = Key::switchKey(layer, r, c);
     key->setLayer(layer);
     setKey(key);
     return this;
 }
 
-Layer * Layer::setLayerDown(Layer *layer, int r, int c) {
-    Key *key = Key::downKey(layer, r, c);
-    key->setLayer(layer);
-    setKey(key);
-    return this;
-}
-
-Layer * Layer::setLayerTemporaryUp(Layer *layer, int r, int c) {
-    Key *key = Key::temporaryUpKey(layer, r, c);
+Layer * Layer::setLayerTemporarySwitch(Layer *layer, int r, int c) {
+    Key *key = Key::temporaryKey(layer, r, c);
     key->setLayer(layer);
     setKey(key);
 
     // Set the other layer automatically to ensure symmetry.
-    Key *targetKey = Key::temporaryDownKey(this, r, c);
-    targetKey->setLayer(this);
-    layer->setKey(targetKey);
-
-    return this;
-}
-
-Layer * Layer::setLayerTemporaryDown(Layer *layer, int r, int c) {
-    Key *key = Key::temporaryDownKey(layer, r, c);
-    key->setLayer(layer);
-    setKey(key);
-
-    // Set the other layer automatically to ensure symmetry.
-    Key *targetKey = Key::temporaryUpKey(this, r, c);
+    Key *targetKey = Key::temporaryKey(this, r, c);
     targetKey->setLayer(this);
     layer->setKey(targetKey);
 
