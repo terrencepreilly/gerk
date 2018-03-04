@@ -137,13 +137,12 @@ static char * test_set_layer_up_and_down_keys() {
     Layer layer2 = Layer((char **) &l2Values, 2, 2);
 
     layer1.setLayerTemporaryUp(&layer2, 1, 0);
-    layer2.setLayerTemporaryDown(&layer1, 1, 0);
     mu_assert(
         (char *) "Layer1 key at 1, 0 should hold layer 2.",
         layer1.getKey(1, 0)->getLayer() == &layer2
     );
     mu_assert(
-        (char *) "Key is of type ON_RISE",
+        (char *) "Key is of type TEMP_UP",
         layer1.getKey(1, 0)->getType() == TEMP_UP
     );
     mu_assert(
@@ -151,8 +150,29 @@ static char * test_set_layer_up_and_down_keys() {
         layer2.getKey(1, 0)->getLayer() == &layer1
     );
     mu_assert(
-        (char *) "Key should be of type ON_FALL",
+        (char *) "Key should be of type TEMP_DOWN",
         layer2.getKey(1, 0)->getType() == TEMP_DOWN
+    );
+    return 0;
+}
+
+static char *test_temporary_layers_added_symmetrically_automatically() {
+    const char *firstValues[1][2] = {
+        {"1", NULL}
+    };
+    Layer *firstLayer = new Layer((char **) &firstValues, 1, 2);
+    const char *secondValues[1][2] = {
+        {"0", NULL}
+    };
+    Layer *secondLayer = new Layer((char **) &secondValues, 1, 2);
+    firstLayer->setLayerTemporaryDown(secondLayer, 1, 0);
+    mu_assert(
+        (char *) "The first key should have been assigned as normal.",
+        firstLayer->getKey(0, 1)->getType() == TEMP_DOWN
+    );
+    mu_assert(
+        (char *) "The second layer key should be assigned automatically.",
+        secondLayer->getKey(0, 1)->getType() == TEMP_UP
     );
     return 0;
 }
@@ -226,6 +246,7 @@ static char * all_tests() {
     mu_run_test(test_board_can_have_layer);
     mu_run_test(test_create_board);
     mu_run_test(test_can_chain_layer_setting);
+    mu_run_test(test_temporary_layers_added_symmetrically_automatically);
     return 0;
 }
 

@@ -49,6 +49,12 @@ Layer * Layer::setLayerTemporaryUp(Layer *layer, int r, int c) {
     Key *key = Key::temporaryUpKey(layer, r, c);
     key->setLayer(layer);
     setKey(key);
+
+    // Set the other layer automatically to ensure symmetry.
+    Key *targetKey = Key::temporaryDownKey(this, r, c);
+    targetKey->setLayer(this);
+    layer->setKey(targetKey);
+
     return this;
 }
 
@@ -56,5 +62,11 @@ Layer * Layer::setLayerTemporaryDown(Layer *layer, int r, int c) {
     Key *key = Key::temporaryDownKey(layer, r, c);
     key->setLayer(layer);
     setKey(key);
+
+    // Set the other layer automatically to ensure symmetry.
+    Key *targetKey = Key::temporaryUpKey(this, r, c);
+    targetKey->setLayer(this);
+    layer->setKey(targetKey);
+
     return this;
 }
