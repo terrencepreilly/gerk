@@ -7,6 +7,7 @@
 #include "key.h"
 #include "layer.h"
 #include "key_type.h"
+#include "tests/test_button.h"
 
 /*
 
@@ -199,8 +200,45 @@ static char * test_board_can_have_layer() {
         {"A", "B"}
     };
     Layer layer = Layer((char **) &values, 1, 2);
-    Board b = Board(&layer);
-    b.runKeys();
+    Board * b = (new Board(&layer))
+          ->setButton(0, 0, new TestButton(0, 0))
+          ->setButton(0, 1, new TestButton(0, 0));
+    b->runKeys();
+    return 0;
+}
+
+/* Tests Buttons */
+
+static char * test_button_array_set_in_board() {
+    const char *values[1][2] = {
+        {"A", "B"}
+    };
+    Layer layer = Layer((char **) &values, 1, 2);
+    Board *b = new Board(&layer);
+    Button *firstButton = new TestButton(0, 0);
+    b->setButton(0, 0, firstButton)
+     ->setButton(0, 1, new TestButton(0, 1));
+
+    mu_assert(
+        (char *) "The button should have been set.",
+        b->getButton(0, 0) == firstButton
+    );
+
+    return 0;
+}
+
+static char * test_button_can_be_mocked() {
+    Button *b = new TestButton(2, 3);
+    mu_assert(
+        (char *) "We should be able to call non-virtual button methods.",
+        b->getRow() == 2
+    );
+    // We should be able to call child methods. (if we cast.)
+    ((TestButton *)b)->setRising();
+    mu_assert(
+        (char *) "virtual methods should resolve to children.",
+        b->risingEdge()
+    );
     return 0;
 }
 
@@ -229,6 +267,46 @@ static char * test_create_board() {
     return 0;
 }
 
+static char * test_switch_board_layers() {
+    // Create the layers.
+    const char *layer2Values[1][2] = {
+        {"1", NULL},
+    };
+    Layer *layer2 = new Layer((char **) &layer2Values, 1, 2);
+    const char *layer1Values[1][2] = {
+        {"0", NULL},
+    };
+    Layer *layer1 = (new Layer((char **) &layer1Values, 1, 2))
+                  ->setLayerTemporarySwitch(layer2, 0, 1);
+
+    // Create the board.
+    Board *board = new Board(layer1);
+
+    // Set the buttons.
+    TestButton *valueButton = new TestButton(0, 0);
+    TestButton *switchButton = new TestButton(0, 1);
+    board->setButton(0, 0, valueButton)
+         ->setButton(0, 1, switchButton);
+
+    // Set the button to falling.
+    switchButton->setFalling();
+
+    // Run keys.
+    board->runKeys();
+
+    // Check to make sure the layer has changed.
+    mu_assert(
+        (char *) "The layer should be the second.",
+        board->getCurrentLayer() == layer2
+    );
+    mu_assert(
+        (char *) "The board should know its in a temporary mode.",
+        board->inTemporaryLayer()
+    );
+
+    return 0;
+}
+
 static char * all_tests() {
     mu_run_test(test_key_is_static);
     mu_run_test(test_layer_creates_keys);
@@ -237,10 +315,13 @@ static char * all_tests() {
     mu_run_test(test_key_can_point_to_layer);
     mu_run_test(test_named_constructors_for_different_key_types);
     mu_run_test(test_set_layer_up_and_down_keys);
+    mu_run_test(test_button_can_be_mocked);
     mu_run_test(test_board_can_have_layer);
     mu_run_test(test_create_board);
     mu_run_test(test_can_chain_layer_setting);
     mu_run_test(test_temporary_layers_added_symmetrically_automatically);
+    mu_run_test(test_button_array_set_in_board);
+    mu_run_test(test_switch_board_layers);
     return 0;
 }
 
