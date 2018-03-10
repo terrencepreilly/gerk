@@ -267,7 +267,7 @@ static char * test_create_board() {
     return 0;
 }
 
-static char * test_switch_board_layers() {
+static char * test_switch_board_temp_layers() {
     // Create the layers.
     const char *layer2Values[1][2] = {
         {"1", NULL},
@@ -304,6 +304,61 @@ static char * test_switch_board_layers() {
         board->inTemporaryLayer()
     );
 
+    // Switch to rising again.
+    switchButton->setRising();
+
+    board->runKeys();
+
+    mu_assert(
+        (char *) "Letting the key up should bring us back.",
+        board->getCurrentLayer() == layer1
+    );
+    mu_assert(
+        (char *) "We should no longer be in the temp. layer.",
+        ! (board->inTemporaryLayer())
+    );
+
+    return 0;
+}
+
+static char * test_switch_board_layers() {
+    // Create the layers.
+    const char *layer2Values[1][2] = {
+        {"1", NULL},
+    };
+    Layer *layer2 = new Layer((char **) &layer2Values, 1, 2);
+    const char *layer1Values[1][2] = {
+        {"0", NULL},
+    };
+    Layer *layer1 = (new Layer((char **) &layer1Values, 1, 2))
+                  ->setLayerSwitch(layer2, 0, 1);
+    layer2->setLayerSwitch(layer1, 0, 1);
+
+    // Create the board.
+    Board *board = new Board(layer1);
+
+    // Set the buttons.
+    TestButton *valueButton = new TestButton(0, 0);
+    TestButton *switchButton = new TestButton(0, 1);
+    board->setButton(0, 0, valueButton)
+         ->setButton(0, 1, switchButton);
+
+    // Set to falling and run keys
+    switchButton->setFalling();
+    board->runKeys();
+
+    mu_assert(
+        (char *) "We should have switched to the next layer.",
+        board->getCurrentLayer() == layer2
+    );
+
+    switchButton->setRising();
+    board->runKeys();
+
+    mu_assert(
+        (char *) "We should not have switched after letting up.",
+        board->getCurrentLayer() == layer2
+    );
     return 0;
 }
 
@@ -321,6 +376,7 @@ static char * all_tests() {
     mu_run_test(test_can_chain_layer_setting);
     mu_run_test(test_temporary_layers_added_symmetrically_automatically);
     mu_run_test(test_button_array_set_in_board);
+    mu_run_test(test_switch_board_temp_layers);
     mu_run_test(test_switch_board_layers);
     return 0;
 }

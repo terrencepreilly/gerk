@@ -42,18 +42,19 @@ void Board::runKeys() {
                     case VALUE:
                         break;
                     case TEMPORARY:
-                        if (inTemporaryLayer()) {
-                            current = previous;
-                            previous = NULL;
-                        } else {
-                            previous = current;
-                            current = key->getLayer();
-                        }
+                        previous = current;
+                        current = key->getLayer();
                         break;
                     case SWITCH:
+                        current = key->getLayer();
                         break;
                     default:
                         break;
+                }
+            } else if (button->risingEdge() && key->getType() == TEMPORARY) {
+                if (inTemporaryLayer()) {
+                    current = previous;
+                    previous = NULL;
                 }
             }
         }

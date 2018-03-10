@@ -12,8 +12,10 @@ bool TestButton::risingEdge() {
 
 void TestButton::setFalling() {
     isFalling = true;
+    isRising = false;
 }
 
 void TestButton::setRising() {
     isRising = true;
+    isFalling = false;
 }
