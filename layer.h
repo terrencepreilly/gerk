@@ -1,22 +1,23 @@
+#include <string>
+#include <vector>
 #include "key.h"
+using namespace std;
 
 #ifndef _LAYER_H
 #define _LAYER_H
 
 class Layer {
     private:
-        Key **keys;
-        int rowSize;
-        int colSize;
-        void setKey(Key *);
+        vector<vector<Key *>> keys;
     public:
-        Layer(char **values, int rows, int columns);
+        Layer(vector<vector<string>> values);
         Key * getKey(int r, int c);
         int getRowSize();
         int getColumnSize();
         /* The below setters return this, so they may be chained.*/
         Layer *setLayerSwitch(Layer *, int r, int c);
         Layer *setLayerTemporarySwitch(Layer *, int r, int c);
+        void setKey(Key *key, int r, int c);
 };
 
 #endif

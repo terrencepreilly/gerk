@@ -1,19 +1,17 @@
-#include <stdio.h>
+#include <string>
 
 #include "key.h"
 
-Key::Key(int r, int c, const char *val) {
+Key::Key(string val) {
     value = val;
-    row = r;
-    column = c;
     type = VALUE;
 }
 
 bool Key::isStatic() {
-    return value == NULL;
+    return value.empty();
 }
 
-const char * Key::getValue() {
+std::string Key::getValue() {
     return value;
 }
 
@@ -23,14 +21,6 @@ void Key::setLayer(Layer *l) {
 
 Layer * Key::getLayer() {
     return layer;
-}
-
-int Key::getRow() {
-    return row;
-}
-
-int Key::getColumn() {
-    return column;
 }
 
 KeyType Key::getType() {

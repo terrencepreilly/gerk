@@ -1,52 +1,53 @@
-#include <stdlib.h>
 #include "layer.h"
 #include "key.h"
 
-Layer::Layer(char **values, int rows, int columns) {
-    keys = (Key**) malloc(sizeof(Key) * rows * columns);
-    rowSize = rows;
-    colSize = columns;
-    for (int row = 0; row < rows; row++) {
-        for (int col = 0; col < columns; col++) {
-            Key *key = new Key(row, col, values[row * rowSize + col]);
-            setKey(key);
+Layer::Layer(vector<vector<string>> values) {
+    keys = vector<vector<Key*>>();
+    for (vector<vector<string>>::iterator rowIt = values.begin();
+            rowIt != values.end(); rowIt++) {
+        vector<Key *> keyRow;
+        for (vector<string>::iterator colIt = rowIt->begin();
+                colIt != rowIt->end(); colIt++) {
+            Key *key = new Key(*colIt);
+            keyRow.push_back(key);
         }
+        keys.push_back(keyRow);
     }
 }
 
 
 Key * Layer::getKey(int r, int c) {
-    return keys[r * rowSize + c];
-}
-
-void Layer::setKey(Key * key) {
-     keys[key->getRow() * rowSize + key->getColumn()] = key;
+    return keys[r][c];
 }
 
 int Layer::getRowSize() {
-    return rowSize;
+    return keys.size();
 }
 
 int Layer::getColumnSize() {
-    return colSize;
+    return keys.begin()->size();
 }
 
 Layer * Layer::setLayerSwitch(Layer *layer, int r, int c) {
-    Key *key = Key::switchKey(layer, r, c);
+    Key *key = Key::switchKey(layer);
     key->setLayer(layer);
-    setKey(key);
+    keys[r][c] = key;
     return this;
 }
 
+void Layer::setKey(Key *key, int r, int c) {
+    keys[r][c] = key;
+}
+
 Layer * Layer::setLayerTemporarySwitch(Layer *layer, int r, int c) {
-    Key *key = Key::temporaryKey(layer, r, c);
+    Key *key = Key::temporaryKey(layer);
     key->setLayer(layer);
-    setKey(key);
+    keys[r][c] = key;
 
     // Set the other layer automatically to ensure symmetry.
-    Key *targetKey = Key::temporaryKey(this, r, c);
+    Key *targetKey = Key::temporaryKey(this);
     targetKey->setLayer(this);
-    layer->setKey(targetKey);
+    layer->setKey(targetKey, r, c);
 
     return this;
 }

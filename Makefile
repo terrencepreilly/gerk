@@ -9,5 +9,9 @@ runtests: $(DEPENDS) tests/tests.cpp tests/minunit.h
 tests/test_button.o: tests/test_button.h tests/test_button.cpp button.h
 	g++ -c -I . tests/test_button.cpp -o tests/test_button.o
 
+.PHONY: test
+test: runtests
+	./runtests
+
 clean:
-	rm -f runtests *.o
+	rm -f runtests *.o tests/*.o
