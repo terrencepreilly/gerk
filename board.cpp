@@ -1,7 +1,8 @@
 #include "stdlib.h"
 #include "board.h"
 
-Board::Board(Layer *layer) {
+Board::Board(Layer *layer, Reporter *rep) {
+    reporter = rep;
     current = layer;
     rowSize = layer->getRowSize();
     colSize = layer->getColumnSize();
@@ -40,6 +41,7 @@ void Board::runKeys() {
             if (button->fallingEdge()) {
                 switch (key->getType()) {
                     case VALUE:
+                        reporter->report(key->getValue());
                         break;
                     case TEMPORARY:
                         previous = current;

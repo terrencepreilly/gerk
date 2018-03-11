@@ -1,5 +1,6 @@
 /**
- * From http://www.jera.com/techinfo/jtns/jtn002.html
+ * Originally from
+ * http://www.jera.com/techinfo/jtns/jtn002.html
  */
  #define mu_assert(message, test) \
  do { \
@@ -9,9 +10,9 @@
 
  #define mu_run_test(test) \
  do { \
-     char *message = test(); \
+     string message = test(); \
      tests_run++; \
-     if (message) \
+     if (!message.empty()) \
         return message; \
  } while (0)
  extern int tests_run;

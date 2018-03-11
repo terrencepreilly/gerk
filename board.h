@@ -1,5 +1,8 @@
+#include <vector>
+
 #include "layer.h"
 #include "button.h"
+#include "reporter.h"
 
 #ifndef _BOARD_H
 #define _BOARD_H
@@ -11,9 +14,10 @@ class Board {
         Button **buttons;
         int rowSize;
         int colSize;
+        Reporter *reporter;
 
     public:
-        Board(Layer *current);
+        Board(Layer *current, Reporter *rep);
 
         Layer * getPreviousLayer();
         Layer * getCurrentLayer();
