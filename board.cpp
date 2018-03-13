@@ -22,8 +22,8 @@ Button * Board::getButton(int r, int c) {
     return buttons[index];
 }
 
-Board * Board::setButton(int r, int c, Button *button) {
-    int index = rowSize * r + c;
+Board * Board::setButton(Button *button) {
+    int index = rowSize * button->getRow() + button->getColumn();
     buttons[index] = button;
     return this;
 }

@@ -23,7 +23,7 @@ class Board {
         Layer * getCurrentLayer();
 
         Button * getButton(int r, int c);
-        Board * setButton(int r, int c, Button *button);
+        Board * setButton(Button *button);
 
         bool inTemporaryLayer();
 

@@ -203,8 +203,8 @@ string test_board_can_have_layer() {
     Layer layer = Layer(values);
     TestReporter reporter = TestReporter();
     Board * b = (new Board(&layer, &reporter))
-          ->setButton(0, 0, new TestButton(0, 0))
-          ->setButton(0, 1, new TestButton(0, 0));
+          ->setButton(new TestButton(0, 0))
+          ->setButton(new TestButton(0, 1));
     b->runKeys();
     return "";
 }
@@ -218,8 +218,8 @@ string test_button_array_set_in_board() {
     TestReporter reporter = TestReporter();
     Board *b = new Board(&layer, &reporter);
     Button *firstButton = new TestButton(0, 0);
-    b->setButton(0, 0, firstButton)
-     ->setButton(0, 1, new TestButton(0, 1));
+    b->setButton(firstButton)
+     ->setButton(new TestButton(0, 1));
 
     mu_assert(
         "The button should have been set.",
@@ -282,8 +282,8 @@ string test_switch_board_temp_layers() {
     // Set the buttons.
     TestButton *valueButton = new TestButton(0, 0);
     TestButton *switchButton = new TestButton(0, 1);
-    board->setButton(0, 0, valueButton)
-         ->setButton(0, 1, switchButton);
+    board->setButton(valueButton)
+         ->setButton(switchButton);
 
     // Set the button to falling.
     switchButton->setFalling();
@@ -336,8 +336,8 @@ string test_switch_board_layers() {
     // Set the buttons.
     TestButton *valueButton = new TestButton(0, 0);
     TestButton *switchButton = new TestButton(0, 1);
-    board->setButton(0, 0, valueButton)
-         ->setButton(0, 1, switchButton);
+    board->setButton(valueButton)
+         ->setButton(switchButton);
 
     // Set to falling and run keys
     switchButton->setFalling();
@@ -365,7 +365,7 @@ string test_reporter_executes_value_keys() {
     TestReporter reporter = TestReporter();
     TestButton btn = TestButton(0, 0);
     Board board = Board(&layer, &reporter);
-    board.setButton(0, 0, &btn);
+    board.setButton(&btn);
     btn.setFalling();
     board.runKeys();
     mu_assert(
