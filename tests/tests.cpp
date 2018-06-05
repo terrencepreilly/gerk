@@ -1,5 +1,3 @@
-/* file minunit_example.c */
-
 #include <string>
 #include <vector>
 #include <iostream>

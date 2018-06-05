@@ -10,7 +10,18 @@ class Layer {
     private:
         vector<vector<Key *>> keys;
     public:
+
+        /**
+         * Create a new layer.
+         *
+         * Generates keys with the given values from the vector.
+         *
+         * Args:
+         *      values: The values of the keys at the given positions.
+         *
+         */
         Layer(vector<vector<string>> values);
+
         Key * getKey(int r, int c);
         int getRowSize();
         int getColumnSize();
