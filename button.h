@@ -18,6 +18,9 @@ class Button {
 
         // True if the button is falling.
         virtual bool fallingEdge() = 0;
+
+        // Update the button before performing checks.
+        virtual void update() = 0;
 };
 
 #endif

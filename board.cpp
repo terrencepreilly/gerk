@@ -37,6 +37,7 @@ void Board::runKeys() {
     for (int rowIndex = 0; rowIndex < rowSize; rowIndex++) {
         for (int colIndex = 0; colIndex < colSize; colIndex++) {
             Button *button = getButton(rowIndex, colIndex);
+            button->update();
             Key *key = current->getKey(rowIndex, colIndex);
             if (button->fallingEdge()) {
                 switch (key->getType()) {

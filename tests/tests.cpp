@@ -340,6 +340,11 @@ string test_switch_board_layers() {
     // Set to falling and run keys
     switchButton->setFalling();
     board->runKeys();
+    mu_assert(
+        "Updates should have been run on the keys.",
+        valueButton->getUpdatesRun()
+        && switchButton->getUpdatesRun()
+    );
 
     mu_assert(
         "We should have switched to the next layer.",
